@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import json
+import random
 import time
 from typing import Any
 
@@ -48,7 +50,20 @@ async def arcgis_get(
                     if response.status == 404:
                         raise LayerNotAvailable(f"HTTP 404 for {url}")
 
-                    data = await response.json(content_type=None)
+                    body = await response.text()
+                    if not body.strip():
+                        raise RuntimeError(
+                            f"Empty response from DCGIS (HTTP {response.status})"
+                        )
+                    try:
+                        data = json.loads(body)
+                    except json.JSONDecodeError as error:
+                        content_type = response.headers.get("Content-Type", "unknown")
+                        raise RuntimeError(
+                            "Non-JSON response from DCGIS "
+                            f"(HTTP {response.status}; {content_type})"
+                        ) from error
+
                     if "error" in data and _is_nonretryable(data["error"]):
                         raise LayerNotAvailable(str(data["error"]))
 
@@ -62,7 +77,8 @@ async def arcgis_get(
             last_error = error
             if attempt + 1 == settings.max_retries:
                 break
-            wait = min(settings.initial_backoff * (2**attempt), 30)
+            base_wait = min(settings.initial_backoff * (2**attempt), 30)
+            wait = base_wait + random.uniform(0.5, min(base_wait, 5.0))
             print(
                 f"  retry {attempt + 1}/{settings.max_retries} "
                 f"({error!r}); sleeping {wait:.1f}s"
