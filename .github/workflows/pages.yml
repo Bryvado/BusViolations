@@ -1,13 +1,13 @@
-name: build-data-and-deploy-pages
+name: deploy-dashboard-pages
 
 on:
   push:
     branches: [main]
     paths:
       - "docs/**"
-      - "src/bus_violations/**"
-      - "pyproject.toml"
       - ".github/workflows/pages.yml"
+  repository_dispatch:
+    types: [dashboard-data-updated]
   workflow_dispatch:
 
 permissions:
@@ -20,34 +20,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 20
     steps:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      - name: Check out dashboard
+        uses: actions/checkout@v4
         with:
-          python-version: "3.12"
-          cache: pip
+          ref: main
+          path: source
 
-      - name: Install data pipeline
-        run: python -m pip install -e .
+      - name: Check out generated data
+        uses: actions/checkout@v4
+        with:
+          ref: dashboard-data
+          path: dashboard-data
 
-      - name: Build exact dashboard data
+      - name: Assemble site
         run: |
-          mkdir -p _site
-          cp -R docs/. _site/
+          test -s dashboard-data/manifest.json
+          test -s dashboard-data/trend_summary.parquet
+          mkdir -p _site/data
+          cp -R source/docs/. _site/
+          rsync -a --exclude=.git dashboard-data/ _site/data/
           touch _site/.nojekyll
-          python -m bus_violations.web_export --output _site/data
 
       - name: Enforce GitHub Pages size limit
         run: |

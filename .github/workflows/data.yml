@@ -1,0 +1,83 @@
+name: refresh-dashboard-data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/bus_violations/**"
+      - "pyproject.toml"
+      - ".github/workflows/data.yml"
+  schedule:
+    - cron: "15 10 8 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dashboard-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Check out pipeline
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Check out generated data branch
+        uses: actions/checkout@v4
+        with:
+          ref: dashboard-data
+          path: publish
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: source/pyproject.toml
+
+      - name: Install data pipeline
+        working-directory: source
+        run: python -m pip install -e .
+
+      - name: Gather complete dashboard data
+        working-directory: source
+        run: python -m bus_violations.web_export --output ../generated-data
+
+      - name: Validate generated snapshot
+        run: |
+          test -s generated-data/manifest.json
+          test -s generated-data/trend_summary.parquet
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path("generated-data/manifest.json").read_text())
+          assert manifest["schema_version"] >= 2
+          assert manifest["no_sampling"] is True
+          assert manifest["summary_granularity"] == "day"
+          assert any(item["status"] == "ready" for item in manifest["partitions"])
+          PY
+
+      - name: Publish generated snapshot
+        run: |
+          find publish -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
+          cp -R generated-data/. publish/
+          cd publish
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Dashboard data is unchanged."
+          else
+            git commit -m "Refresh dashboard data $(date -u +%Y-%m-%d)"
+            git push origin dashboard-data
+          fi
+
+      - name: Request Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api "repos/${GITHUB_REPOSITORY}/dispatches" -f event_type=dashboard-data-updated

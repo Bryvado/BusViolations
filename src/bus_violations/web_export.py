@@ -32,6 +32,7 @@ POINT_COLUMNS = {
     "source_month_num": "month",
 }
 SUMMARY_KEYS = (
+    "issue_date",
     "year_month",
     "violation_type",
     "agency",
@@ -56,6 +57,7 @@ def _valid_dc_coordinates(frame: pd.DataFrame) -> pd.Series:
 
 def _summarize(frame: pd.DataFrame) -> pd.DataFrame:
     working = frame.copy()
+    working["issue_date"] = working["issue_date"].dt.floor("D")
     working["year_month"] = working["issue_date"].dt.to_period("M").astype("string")
     return (
         working.groupby(list(SUMMARY_KEYS), dropna=False, observed=True)
@@ -175,9 +177,10 @@ async def build_web_data(
     )
 
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "no_sampling": True,
+        "summary_granularity": "day",
         "trend_summary": "trend_summary.parquet",
         "partitions": partitions,
     }
