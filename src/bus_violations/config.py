@@ -32,10 +32,10 @@ class Settings:
         "Violations_{viol_type}_{year}/MapServer"
     )
     page_size: int = 2_000
-    max_retries: int = 5
+    max_retries: int = 8
     initial_backoff: float = 1.0
-    concurrent_requests: int = 12
-    per_host_limit: int = 6
+    concurrent_requests: int = 4
+    per_host_limit: int = 2
     request_timeout: int = 120
     cutoff: str = "2025-08-01"
     minimum_pre_cutoff_agency_count: int = 500
