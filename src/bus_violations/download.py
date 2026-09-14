@@ -174,20 +174,22 @@ async def fetch_one_layer(
             "message": "",
         }
 
-    offsets = range(0, total, settings.page_size)
-    pages = await asyncio.gather(
-        *[
-            fetch_layer_page(session, semaphore, query_url, offset, settings)
-            for offset in offsets
-        ],
-        return_exceptions=True,
-    )
-    errors = [page for page in pages if isinstance(page, BaseException)]
-    if errors:
-        raise RuntimeError(
-            f"{violation_type} {month} {year}: "
-            f"{len(errors)} page request(s) failed; refusing a partial layer"
-        ) from errors[0]
+    pages: list[list[dict[str, Any]]] = []
+    for offset in range(0, total, settings.page_size):
+        try:
+            page = await fetch_layer_page(
+                session,
+                semaphore,
+                query_url,
+                offset,
+                settings,
+            )
+        except Exception as error:
+            raise RuntimeError(
+                f"{violation_type} {month} {year}: "
+                f"page at offset {offset:,} failed; refusing a partial layer"
+            ) from error
+        pages.append(page)
 
     rows = [row for page in pages for row in page]
     if len(rows) != total:
