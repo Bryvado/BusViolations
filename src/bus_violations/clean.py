@@ -6,6 +6,9 @@ from pathlib import Path
 
 import pandas as pd
 
+COLUMN_ALIASES = {
+    "VIOLATION_PROC_DESC": "VIOLATION_PROCESS_DESC",
+}
 DATETIME_COLUMNS = ("ISSUE_DATE", "GIS_LAST_MOD_DTTM", "DISPOSITION_DATE")
 NUMERIC_COLUMNS = (
     "FINE_AMOUNT",
@@ -48,16 +51,24 @@ def _parse_arcgis_datetime(series: pd.Series) -> pd.Series:
     return parsed_numeric.where(numeric.notna(), parsed_text)
 
 
+def _standardize_columns(frame: pd.DataFrame) -> pd.DataFrame:
+    renames = {
+        source: target
+        for source, target in COLUMN_ALIASES.items()
+        if source in frame.columns and target not in frame.columns
+    }
+    return frame.rename(columns=renames).copy()
+
+
 def clean_violations(
     frame: pd.DataFrame,
     *,
     today: pd.Timestamp | None = None,
 ) -> pd.DataFrame:
-    missing = sorted(set(CRITICAL_COLUMNS) - set(frame.columns))
+    clean = _standardize_columns(frame)
+    missing = sorted(set(CRITICAL_COLUMNS) - set(clean.columns))
     if missing:
         raise ValueError(f"Missing required columns: {', '.join(missing)}")
-
-    clean = frame.copy()
 
     for column in DATETIME_COLUMNS:
         if column in clean:
