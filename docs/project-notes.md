@@ -1,25 +1,27 @@
-# Project notes
+# Migration notes
 
-## Working description
+The source was supplied as pasted Colab notebook text and was translated into importable Python modules. The notebook itself is not part of this repository.
 
-This project analyzes bus-related traffic violations in Washington, D.C. The exact unit of analysis, source agencies, date coverage, and intended publication outputs will be documented while the Colab notebook is migrated.
+## Cell-to-module map
 
-## Migration checklist
+| Notebook responsibility | Repository module |
+| --- | --- |
+| ArcGIS configuration and year/month settings | `src/bus_violations/config.py` |
+| Async requests, retries, pagination, and Parquet export | `src/bus_violations/download.py` |
+| Date, numeric, string, plate-state, and issue-time cleaning | `src/bus_violations/clean.py` |
+| Monthly and August 2025 comparison tables | `src/bus_violations/analysis.py` |
+| Ten descriptive charts | `src/bus_violations/plots.py` |
+| Ordered execution and filters | `src/bus_violations/pipeline.py` |
 
-- [ ] Add the original Colab notebook to `notebooks/`.
-- [ ] Inventory every input file, URL, and manually entered value.
-- [ ] Record data sources in `data/README.md`.
-- [ ] Identify the notebook's language and dependencies.
-- [ ] Separate reusable logic from exploratory cells.
-- [ ] Add explicit validation checks for row counts, identifiers, dates, and geography.
-- [ ] Reproduce the notebook's current headline results.
-- [ ] Add a single documented command for rebuilding the project.
-- [ ] Record methodological choices and known limitations.
-- [ ] Remove secrets, temporary downloads, and embedded large outputs before committing.
+## Translation decisions
 
-## Decisions
-
-| Date | Decision | Reason |
-| --- | --- | --- |
-| 2026-09-14 | Keep raw and intermediate data out of Git by default. | Prevent accidental publication and keep the repository lightweight. |
-| 2026-09-14 | Delay choosing a language-specific framework until the notebook is inventoried. | Avoid imposing the wrong tooling during migration. |
+- Consolidated the notebook's duplicated downloader into one implementation.
+- Replaced Colab's top-level `await main()` with a normal command-line entry point using `asyncio.run`.
+- Removed `google.colab.files.download`; artifacts now use stable project paths.
+- Split raw acquisition from cleaning so the original downloaded attributes are retained.
+- Added a per-layer download manifest.
+- Changed page failures from warnings to fatal errors to prevent incomplete data from being treated as complete.
+- Validated both the hour and minute portions of `ISSUE_TIME`.
+- Excluded the incomplete current month from comparative time-series outputs.
+- Replaced unequal-period total-count comparisons with average monthly rates.
+- Preserved the notebook's August 1, 2025 cutoff and documented that it is descriptive rather than causal.
