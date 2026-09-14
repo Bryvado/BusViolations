@@ -157,6 +157,15 @@ async function registerFile(alias, relativePath) {
   state.registered.add(alias);
 }
 
+function median(values) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2
+    ? sorted[middle]
+    : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
 function latestCompletePartition() {
   const now = new Date();
   const currentKey = now.getUTCFullYear() * 12 + now.getUTCMonth();
@@ -164,6 +173,40 @@ function latestCompletePartition() {
     .filter((item) => item.status === "ready" && item.path)
     .filter((item) => item.year * 12 + item.month - 1 < currentKey)
     .sort((a, b) => a.year - b.year || a.month - b.month);
+
+  const periods = [...new Set(ready.map((item) => item.year + "-" + item.month))]
+    .map((key) => {
+      const [year, month] = key.split("-").map(Number);
+      return { year, month };
+    })
+    .sort((a, b) => b.year - a.year || b.month - a.month);
+
+  for (const period of periods) {
+    const entries = ready.filter(
+      (item) => item.year === period.year && item.month === period.month
+    );
+    if (!["Moving", "Parking"].every(
+      (type) => entries.some((item) => item.violation_type === type)
+    )) {
+      continue;
+    }
+
+    const likelyComplete = entries.every((item) => {
+      const earlier = ready
+        .filter(
+          (candidate) =>
+            candidate.violation_type === item.violation_type &&
+            (candidate.year < item.year ||
+              (candidate.year === item.year && candidate.month < item.month))
+        )
+        .slice(-6)
+        .map((candidate) => Number(candidate.analysis_rows || 0))
+        .filter((rows) => rows > 0);
+      const baseline = median(earlier);
+      return baseline === 0 || item.analysis_rows >= baseline * 0.35;
+    });
+    if (likelyComplete) return entries[0];
+  }
   return ready.at(-1);
 }
 
