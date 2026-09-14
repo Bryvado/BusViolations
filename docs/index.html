@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore moving and parking violations published by the District of Columbia.">
+  <title>DC Violations Explorer</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">District of Columbia · 2024–2026</p>
+      <h1>Violations Explorer</h1>
+      <p class="dek">See where moving and parking citations cluster, then trace how enforcement changes over time.</p>
+    </div>
+    <a class="source-link" href="https://github.com/Bryvado/BusViolations">Methods &amp; code</a>
+  </header>
+
+  <main class="layout">
+    <aside class="filters" aria-labelledby="filters-title">
+      <div class="filter-heading">
+        <div>
+          <p class="section-kicker">Controls</p>
+          <h2 id="filters-title">Filter records</h2>
+        </div>
+        <button id="reset-filters" class="text-button" type="button">Reset</button>
+      </div>
+
+      <fieldset>
+        <legend>Violation category</legend>
+        <label class="check-row">
+          <input id="type-moving" type="checkbox" value="Moving" checked>
+          <span>Moving</span>
+        </label>
+        <label class="check-row">
+          <input id="type-parking" type="checkbox" value="Parking" checked>
+          <span>Parking</span>
+        </label>
+      </fieldset>
+
+      <div class="two-column">
+        <label>
+          <span>Map year</span>
+          <select id="year">
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+          </select>
+        </label>
+        <label>
+          <span>Map month</span>
+          <select id="month">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7" selected>August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        <span>Issuing agency contains</span>
+        <input id="agency" type="text" placeholder="Example: MPD" autocomplete="off">
+      </label>
+
+      <label>
+        <span>Violation contains</span>
+        <input id="violation" type="text" placeholder="Example: SPEED" autocomplete="off">
+      </label>
+
+      <label>
+        <span>Plate state</span>
+        <input id="plate-state" type="text" maxlength="10" placeholder="Example: DC" autocomplete="off">
+      </label>
+
+      <div class="two-column">
+        <label>
+          <span>Minimum fine</span>
+          <input id="fine-min" type="number" min="0" step="1" placeholder="$0">
+        </label>
+        <label>
+          <span>Maximum fine</span>
+          <input id="fine-max" type="number" min="0" step="1" placeholder="Any">
+        </label>
+      </div>
+
+      <button id="apply-filters" class="primary-button" type="button">Apply filters</button>
+      <p class="filter-note">Trend charts cover every available month from January 2024. The map loads every matching record with a valid coordinate for the month selected above.</p>
+    </aside>
+
+    <section class="content">
+      <div id="notice" class="notice visible" role="status" aria-live="polite">
+        Preparing the complete dashboard dataset…
+      </div>
+
+      <section class="metrics" aria-label="Selected month summary">
+        <article class="metric">
+          <p>Violations</p>
+          <strong id="metric-count">—</strong>
+          <span>exact filtered count</span>
+        </article>
+        <article class="metric">
+          <p>Fines issued</p>
+          <strong id="metric-fines">—</strong>
+          <span>sum of base fines</span>
+        </article>
+        <article class="metric">
+          <p>Total paid</p>
+          <strong id="metric-paid">—</strong>
+          <span>reported payments</span>
+        </article>
+        <article class="metric">
+          <p>Mapped points</p>
+          <strong id="metric-points">—</strong>
+          <span>all valid coordinates</span>
+        </article>
+      </section>
+
+      <section class="panel map-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Geography</p>
+            <h2 id="map-title">Citation locations</h2>
+          </div>
+          <div class="segmented" aria-label="Map display">
+            <button id="show-heat" class="active" type="button" aria-pressed="true">Heatmap</button>
+            <button id="show-points" type="button" aria-pressed="false">Points</button>
+          </div>
+        </div>
+        <div id="map" aria-label="Interactive map of D.C. violation locations"></div>
+        <div class="map-footer">
+          <span><i class="legend-dot"></i> Each record contributes separately; no sampling.</span>
+          <span id="map-note">Waiting for data.</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Trend</p>
+            <h2>Monthly violations</h2>
+          </div>
+          <p class="panel-note">Current month may be incomplete</p>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="count-chart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Payments</p>
+            <h2>Fines issued and total paid</h2>
+          </div>
+          <p class="panel-note">Nominal dollars</p>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="money-chart"></canvas>
+        </div>
+      </section>
+
+      <section class="method-note">
+        <h2>How to read this page</h2>
+        <p>The dashboard stores every cleaned record with a valid D.C. coordinate in compressed monthly Parquet files. The selected files are queried in your browser and rendered with WebGL; neither the heatmap nor the point layer uses a sample.</p>
+        <p>Summary totals also include cleaned records without usable coordinates, so the violations count can exceed the mapped-points count. Trend charts are descriptive and do not by themselves identify what caused a change.</p>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>Data: District of Columbia Geographic Information System. Interface and analysis code: <a href="https://github.com/Bryvado/BusViolations">BusViolations</a>.</p>
+  </footer>
+
+  <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
