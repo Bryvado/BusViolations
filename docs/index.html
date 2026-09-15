@@ -9,33 +9,30 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="styles.css?v=20260915">
+  <link rel="stylesheet" href="dashboard.css?v=20260915">
 </head>
 <body>
   <header class="masthead">
     <div class="masthead-inner">
-      <div>
+      <div class="brand">
         <p class="eyebrow">District of Columbia · 2024–2026</p>
         <h1>Violations Explorer</h1>
-        <p class="dek">An interactive record of published moving and parking citations by date, fine, location, agency, and violation.</p>
       </div>
+      <p class="dek">Moving and parking citations by date, fine, location, agency, and violation.</p>
       <a class="source-link" href="https://github.com/Bryvado/BusViolations">Methods &amp; code <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
-  <main class="page-shell">
-    <div id="notice" class="notice visible" role="status" aria-live="polite">Preparing the complete dashboard dataset…</div>
-
-    <section class="control-panel" aria-labelledby="filters-title">
+  <main class="dashboard-shell">
+    <aside class="control-panel" aria-labelledby="filters-title">
       <div class="control-heading">
         <div>
           <p class="section-kicker">Live crossfilter</p>
-          <h2 id="filters-title">Narrow the records</h2>
-          <p>Every control updates the dashboard automatically.</p>
+          <h2 id="filters-title">Filters</h2>
         </div>
         <div class="control-actions">
           <span id="live-state" class="live-state"><i></i> Live</span>
-          <button id="reset-filters" class="text-button" type="button">Reset all</button>
+          <button id="reset-filters" class="text-button" type="button">Reset</button>
         </div>
       </div>
 
@@ -99,66 +96,70 @@
       </div>
 
       <div id="active-filters" class="active-filters" aria-live="polite"></div>
-    </section>
+      <details class="method-note">
+        <summary>Methods and caveats</summary>
+        <p>Histogram heights recalculate from the other active filters. Drag either handle or enter exact limits.</p>
+        <p>Totals and non-map trends include every cleaned record. The map and hourly chart require valid D.C. coordinates. No view uses a sample, and descriptive changes do not establish a cause.</p>
+        <p>Data: District of Columbia Geographic Information System.</p>
+      </details>
+    </aside>
 
-    <section class="metrics" aria-label="Filtered summary">
-      <article class="metric"><p>Violations</p><strong id="metric-count">—</strong><span>all filtered records</span></article>
-      <article class="metric"><p>Mapped</p><strong id="metric-points">—</strong><span>valid D.C. coordinates</span></article>
-      <article class="metric"><p>Fines issued</p><strong id="metric-fines">—</strong><span>sum of base fines</span></article>
-      <article class="metric"><p>Total paid</p><strong id="metric-paid">—</strong><span>reported payments</span></article>
-      <article class="metric"><p>Paid / fines</p><strong id="metric-rate">—</strong><span>payments divided by base fines</span></article>
-      <article class="metric"><p>Average fine</p><strong id="metric-average">—</strong><span>per violation</span></article>
-    </section>
+    <section class="workspace" aria-label="Violation dashboard">
+      <div id="notice" class="notice visible" role="status" aria-live="polite">Preparing the complete dashboard dataset…</div>
 
-    <section class="panel map-panel">
-      <div class="panel-heading map-heading">
-        <div><p class="section-kicker">Geography</p><h2>Citation locations</h2></div>
-        <div class="segmented" role="group" aria-label="Map display">
-          <button id="show-heat" class="active" type="button" aria-pressed="true">Heatmap</button>
-          <button id="show-points" type="button" aria-pressed="false">Points</button>
+      <section class="metrics" aria-label="Filtered summary">
+        <article class="metric"><p>Violations</p><strong id="metric-count">—</strong><span>filtered records</span></article>
+        <article class="metric"><p>Mapped</p><strong id="metric-points">—</strong><span>valid coordinates</span></article>
+        <article class="metric"><p>Fines issued</p><strong id="metric-fines">—</strong><span>base fines</span></article>
+        <article class="metric"><p>Total paid</p><strong id="metric-paid">—</strong><span>reported payments</span></article>
+        <article class="metric"><p>Paid / fines</p><strong id="metric-rate">—</strong><span>payment ratio</span></article>
+        <article class="metric"><p>Average fine</p><strong id="metric-average">—</strong><span>per violation</span></article>
+      </section>
+
+      <section class="panel map-panel">
+        <div class="panel-heading map-heading">
+          <div><p class="section-kicker">Primary view</p><h2>Citation locations</h2></div>
+          <div class="segmented" role="group" aria-label="Map display">
+            <button id="show-heat" class="active" type="button" aria-pressed="true">Heatmap</button>
+            <button id="show-points" type="button" aria-pressed="false">Points</button>
+          </div>
         </div>
-      </div>
-      <div id="heat-controls" class="heat-controls" aria-label="Heatmap appearance">
-        <label class="range-control"><span>Intensity <output id="intensity-value">1×</output></span><input id="heat-intensity" type="range" min="0.25" max="4" value="1" step="0.25"></label>
-        <label class="range-control"><span>Radius <output id="radius-value">34 px</output></span><input id="heat-radius" type="range" min="10" max="80" value="34" step="2"></label>
-        <label class="range-control"><span>Opacity <output id="opacity-value">85%</output></span><input id="heat-opacity" type="range" min="0.25" max="1" value="0.85" step="0.05"></label>
-        <label class="shade-control"><span>Shade</span><select id="heat-palette"><option value="district" selected>Blue → orange</option><option value="fire">Gold → red</option><option value="blue">Light → navy</option><option value="purple">Lavender → plum</option><option value="viridis">Viridis</option></select></label>
-      </div>
-      <div id="map" aria-label="Interactive map of D.C. violation locations"></div>
-      <div class="map-footer"><span><i class="legend-dot"></i> Every valid coordinate is rendered; no sampling.</span><span id="map-note">Waiting for data.</span></div>
-    </section>
+        <div class="map-stage">
+          <div id="map" aria-label="Interactive map of D.C. violation locations"></div>
+          <div id="heat-controls" class="heat-controls" aria-label="Heatmap appearance">
+            <label class="range-control"><span>Intensity <output id="intensity-value">1×</output></span><input id="heat-intensity" type="range" min="0.25" max="4" value="1" step="0.25"></label>
+            <label class="range-control"><span>Radius <output id="radius-value">34 px</output></span><input id="heat-radius" type="range" min="10" max="80" value="34" step="2"></label>
+            <label class="range-control"><span>Opacity <output id="opacity-value">85%</output></span><input id="heat-opacity" type="range" min="0.25" max="1" value="0.85" step="0.05"></label>
+            <label class="shade-control"><span>Shade</span><select id="heat-palette"><option value="district" selected>Blue → orange</option><option value="fire">Gold → red</option><option value="blue">Light → navy</option><option value="purple">Lavender → plum</option><option value="viridis">Viridis</option></select></label>
+          </div>
+          <div class="map-footer"><span><i class="legend-dot"></i> Every valid coordinate · no sampling</span><span id="map-note">Waiting for data.</span></div>
+        </div>
+      </section>
 
-    <section class="insight-grid" aria-label="Violation trends and patterns">
-      <article class="panel insight-card wide-card">
-        <div class="panel-heading"><div><p class="section-kicker">Selected period</p><h2>Violations over time</h2></div><p id="trend-granularity" class="panel-note">Exact records</p></div>
-        <div class="chart-wrap"><canvas id="daily-chart"></canvas></div>
-      </article>
-      <article class="panel insight-card">
-        <div class="panel-heading"><div><p class="section-kicker">Time of day</p><h2>Hourly rhythm</h2></div><p class="panel-note">Mapped records</p></div>
-        <div class="chart-wrap chart-compact"><canvas id="hour-chart"></canvas></div>
-      </article>
-      <article class="panel insight-card">
-        <div class="panel-heading"><div><p class="section-kicker">Composition</p><h2>Top violations</h2></div><p class="panel-note">All records</p></div>
-        <div class="chart-wrap chart-compact"><canvas id="top-chart"></canvas></div>
-      </article>
-      <article class="panel insight-card wide-card">
-        <div class="panel-heading"><div><p class="section-kicker">Payments</p><h2>Fines issued and total paid</h2></div><p class="panel-note">Nominal dollars</p></div>
-        <div class="chart-wrap"><canvas id="money-chart"></canvas></div>
-      </article>
-    </section>
-
-    <section class="method-note">
-      <h2>How to read this page</h2>
-      <p>Histogram heights recalculate from the other active filters. The timeline retains the full date context while highlighted bars show the selected range; the fine distribution works the same way. Drag either handle or enter exact limits below.</p>
-      <p>Totals and non-map trends include every cleaned record. The map and hourly chart use records with valid D.C. coordinates. No chart or map uses a sample, and descriptive changes do not by themselves establish a cause.</p>
+      <section class="insight-grid" aria-label="Violation trends and patterns">
+        <article class="panel insight-card">
+          <div class="panel-heading"><div><p class="section-kicker">Trend</p><h2>Violations over time</h2></div><p id="trend-granularity" class="panel-note">Exact records</p></div>
+          <div class="chart-wrap"><canvas id="daily-chart"></canvas></div>
+        </article>
+        <article class="panel insight-card">
+          <div class="panel-heading"><div><p class="section-kicker">Time</p><h2>Hourly rhythm</h2></div><p class="panel-note">Mapped records</p></div>
+          <div class="chart-wrap"><canvas id="hour-chart"></canvas></div>
+        </article>
+        <article class="panel insight-card">
+          <div class="panel-heading"><div><p class="section-kicker">Mix</p><h2>Top violations</h2></div><p class="panel-note">All records</p></div>
+          <div class="chart-wrap"><canvas id="top-chart"></canvas></div>
+        </article>
+        <article class="panel insight-card">
+          <div class="panel-heading"><div><p class="section-kicker">Money</p><h2>Fines and payments</h2></div><p class="panel-note">Nominal dollars</p></div>
+          <div class="chart-wrap"><canvas id="money-chart"></canvas></div>
+        </article>
+      </section>
     </section>
   </main>
-
-  <footer><p>Data: District of Columbia Geographic Information System. Interface and analysis code: <a href="https://github.com/Bryvado/BusViolations">BusViolations</a>.</p></footer>
 
   <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
   <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script type="module" src="app.js?v=20260915"></script>
+  <script type="module" src="app.js?v=20260915-2"></script>
 </body>
 </html>
