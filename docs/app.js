@@ -435,7 +435,7 @@ function lineOptions(formatter) {
     interaction: { mode: "index", intersect: false },
     plugins: { legend: { labels: { color: "#34444a", font: { family: "system-ui" }, usePointStyle: true } } },
     scales: {
-      x: { grid: { display: false }, ticks: { color: "#657278", autoSkip: true, maxTicksLimit: 7, maxRotation: 0 } },
+      x: { grid: { display: false }, ticks: { color: "#657278", autoSkip: true, maxTicksLimit: 4, maxRotation: 0 } },
       y: { beginAtZero: true, grid: { color: "rgba(101,114,120,0.16)" }, ticks: { color: "#657278", callback: formatter } },
     },
   };
@@ -481,7 +481,7 @@ function renderCharts(trend, topRows, hourlyRows) {
     options: { ...lineOptions((value) => NUMBER.format(value)), scales: { x: { stacked: true, grid: { display: false }, ticks: { color: "#657278", autoSkip: true, maxTicksLimit: 8 } }, y: { stacked: true, beginAtZero: true, grid: { color: "rgba(101,114,120,0.16)" }, ticks: { color: "#657278", callback: (value) => NUMBER.format(value) } } } },
   });
 
-  const shorten = (value) => value.length > 28 ? value.slice(0, 25) + "…" : value;
+  const shorten = (value) => value.length > 20 ? value.slice(0, 17) + "…" : value;
   state.charts.top = new Chart(document.querySelector("#top-chart"), {
     type: "bar",
     data: { labels: topRows.map((row) => shorten(String(row.violation))), datasets: [{ label: "Citations", data: topRows.map((row) => numberValue(row.violation_count)), backgroundColor: "#1d5e76c7", borderRadius: 3 }] },
