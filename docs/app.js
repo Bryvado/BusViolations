@@ -31,6 +31,7 @@ const state = {
   histogramData: { dates: [], fines: [] },
   refreshTimer: null,
   requestId: 0,
+  mapAvailable: false,
 };
 
 const elements = {
@@ -554,7 +555,9 @@ async function refresh() {
     renderMap();
     const total = numberValue(summary.violation_count);
     const omitted = Math.max(0, total - mapped.points.length);
-    elements.mapNote.textContent = omitted > 0 ? "All " + NUMBER.format(mapped.points.length) + " valid locations mapped; " + NUMBER.format(omitted) + " records lack usable coordinates." : "All " + NUMBER.format(mapped.points.length) + " filtered records are mapped.";
+    elements.mapNote.textContent = state.mapAvailable
+      ? (omitted > 0 ? "All " + NUMBER.format(mapped.points.length) + " valid locations mapped; " + NUMBER.format(omitted) + " records lack usable coordinates." : "All " + NUMBER.format(mapped.points.length) + " filtered records are mapped.")
+      : NUMBER.format(mapped.points.length) + " records have valid coordinates; the map is unavailable in this browser.";
     showNotice("Showing " + NUMBER.format(total) + " exact records and " + NUMBER.format(mapped.points.length) + " mapped locations. Data build: " + new Date(state.manifest.generated_at).toLocaleString("en-US") + ".");
   } catch (error) {
     console.error(error);
@@ -613,6 +616,7 @@ async function initMap() {
   await new Promise((resolve) => state.map.once("load", resolve));
   state.overlay = new deck.MapboxOverlay({ interleaved: false, layers: [], getTooltip: tooltip });
   state.map.addControl(state.overlay);
+  state.mapAvailable = true;
 }
 
 function bindControls() {
@@ -658,7 +662,14 @@ async function bootstrap() {
   if (!response.ok) throw new Error("Manifest request failed: " + response.status);
   state.manifest = await response.json();
   if (state.manifest.schema_version < 2 || state.manifest.summary_granularity !== "day") throw new Error("Dashboard data must be refreshed to schema version 2.");
-  await Promise.all([initDatabase(), initMap()]);
+  const mapInit = initMap().catch((error) => {
+    console.warn("Map unavailable; continuing without WebGL.", error);
+    const mapElement = document.querySelector("#map");
+    mapElement.classList.add("map-unavailable");
+    mapElement.textContent = "The map cannot run in this browser. All non-map analysis remains available.";
+    elements.heatControls.hidden = true;
+  });
+  await Promise.all([initDatabase(), mapInit]);
   await registerFile("trend_summary.parquet", state.manifest.trend_summary);
   await initializeDomains();
   updateHeatStyle(); updateActiveFilters(); bindControls();

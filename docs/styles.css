@@ -126,6 +126,7 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline-offse
 .range-control input { width: 100%; margin-bottom: 0; accent-color: var(--orange); cursor: pointer; }
 .shade-control select { min-height: 34px; padding-block: 0.35rem; }
 #map { width: 100%; height: min(66vh, 680px); min-height: 440px; background: #e5e8e6; border: 1px solid var(--line-strong); border-radius: 0; }
+#map.map-unavailable { display: grid; place-items: center; height: auto; padding: 2rem; color: var(--muted); background: #eef0ed; font-size: 0.85rem; text-align: center; }
 .map-footer { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.65rem; }
 .legend-dot { display: inline-block; width: 0.65rem; height: 0.65rem; margin-right: 0.35rem; background: var(--orange); border-radius: 50%; }
 
