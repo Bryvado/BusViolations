@@ -2,6 +2,7 @@ import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0
 
 const DATA_ROOT = new URL("data/", window.location.href);
 const DAY_MS = 86_400_000;
+const FINE_SLIDER_STEPS = 1000;
 const NUMBER = new Intl.NumberFormat("en-US");
 const MONEY = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const PERCENT = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
@@ -32,6 +33,7 @@ const state = {
   refreshTimer: null,
   requestId: 0,
   mapAvailable: false,
+  analysis: { open: false, active: "daily" },
 };
 
 const elements = {
@@ -75,6 +77,10 @@ const elements = {
   heatOpacity: document.querySelector("#heat-opacity"),
   opacityValue: document.querySelector("#opacity-value"),
   heatPalette: document.querySelector("#heat-palette"),
+  analysisDock: document.querySelector("#analysis-dock"),
+  analysisToggle: document.querySelector("#analysis-toggle"),
+  analysisTabs: [...document.querySelectorAll(".analysis-tab")],
+  analysisPanels: [...document.querySelectorAll(".analysis-panels .insight-card")],
 };
 
 function showNotice(message, error = false) {
@@ -231,11 +237,10 @@ async function initializeDomains() {
   const defaultEnd = latest ? Math.min(state.domains.maxDay, isoToDay(new Date(Date.UTC(latest.year, latest.month, 0)).toISOString().slice(0, 10))) : state.domains.maxDay;
   setDateRange(defaultStart, defaultEnd);
 
-  const fineStep = state.domains.maxFine > 500 ? 5 : 1;
   for (const input of [elements.fineRangeStart, elements.fineRangeEnd]) {
-    input.min = state.domains.minFine;
-    input.max = state.domains.maxFine;
-    input.step = fineStep;
+    input.min = 0;
+    input.max = FINE_SLIDER_STEPS;
+    input.step = 1;
   }
   elements.fineMin.min = state.domains.minFine;
   elements.fineMin.max = state.domains.maxFine;
@@ -255,11 +260,25 @@ function setDateRange(start, end) {
   recolorHistograms();
 }
 
+function fineToSlider(value) {
+  const span = state.domains.maxFine - state.domains.minFine;
+  if (span <= 0) return 0;
+  const offset = Math.max(0, Math.min(Number(value) - state.domains.minFine, span));
+  return Math.round(Math.log1p(offset) / Math.log1p(span) * FINE_SLIDER_STEPS);
+}
+
+function sliderToFine(value) {
+  const span = state.domains.maxFine - state.domains.minFine;
+  if (span <= 0) return state.domains.minFine;
+  const ratio = Math.max(0, Math.min(Number(value), FINE_SLIDER_STEPS)) / FINE_SLIDER_STEPS;
+  return Math.round(state.domains.minFine + Math.expm1(Math.log1p(span) * ratio));
+}
+
 function setFineRange(start, end) {
   const low = Math.max(state.domains.minFine, Math.min(Number(start), state.domains.maxFine));
   const high = Math.max(low, Math.min(Number(end), state.domains.maxFine));
-  elements.fineRangeStart.value = low;
-  elements.fineRangeEnd.value = high;
+  elements.fineRangeStart.value = fineToSlider(low);
+  elements.fineRangeEnd.value = fineToSlider(high);
   elements.fineMin.value = low;
   elements.fineMax.value = high;
   elements.fineSelectionLabel.textContent = MONEY.format(low) + " – " + MONEY.format(high);
@@ -361,23 +380,27 @@ async function loadFilterSuggestions() {
 function binFines(rows, count = 26) {
   const min = state.domains.minFine;
   const max = state.domains.maxFine;
-  const width = Math.max(1, (max - min) / count);
+  const span = Math.max(1, max - min);
+  const logSpan = Math.log1p(span);
+  const boundary = (index) => min + Math.expm1(logSpan * index / count);
   const bins = Array.from({ length: count }, (_, index) => ({
-    low: min + index * width,
-    high: index === count - 1 ? max : min + (index + 1) * width,
+    low: index === 0 ? min : boundary(index),
+    high: index === count - 1 ? max : boundary(index + 1),
     count: 0,
   }));
   for (const row of rows) {
     const value = numberValue(row.fine_amount);
-    const index = Math.min(count - 1, Math.max(0, Math.floor((value - min) / width)));
+    const index = Math.min(count - 1, Math.max(0, Math.floor(Math.log1p(Math.max(0, value - min)) / logSpan * count)));
     bins[index].count += numberValue(row.violation_count);
   }
   return bins;
 }
 
-function histogramOptions(formatter) {
+function histogramOptions(formatter, onSelect) {
   return {
     responsive: true, maintainAspectRatio: false, animation: false,
+    onClick: (_event, hits) => { if (hits.length) onSelect(hits[0].index); },
+    onHover: (event, hits) => { event.native.target.style.cursor = hits.length ? "pointer" : "default"; },
     plugins: { legend: { display: false }, tooltip: { callbacks: { label: (context) => NUMBER.format(context.raw) + " citations" } } },
     scales: {
       x: { grid: { display: false }, ticks: { color: "#657278", autoSkip: true, maxTicksLimit: 8, maxRotation: 0 } },
@@ -394,7 +417,13 @@ function renderHistograms(dateRows, fineRows) {
   state.charts.dateHistogram = new Chart(document.querySelector("#date-histogram"), {
     type: "bar",
     data: { labels: dateRows.map((row) => row.bucket), datasets: [{ data: dateRows.map((row) => numberValue(row.violation_count)), borderWidth: 0, borderRadius: 2 }] },
-    options: histogramOptions((value) => NUMBER.format(value)),
+    options: histogramOptions((value) => NUMBER.format(value), (index) => {
+      const row = dateRows[index];
+      const [year, month] = row.bucket.split("-").map(Number);
+      const start = Math.max(state.domains.minDay, isoToDay(row.bucket + "-01"));
+      const end = Math.min(state.domains.maxDay, isoToDay(new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10)));
+      setDateRange(start, end); updateActiveFilters(); scheduleRefresh(50);
+    }),
   });
   state.charts.fineHistogram = new Chart(document.querySelector("#fine-histogram"), {
     type: "bar",
@@ -402,7 +431,12 @@ function renderHistograms(dateRows, fineRows) {
       labels: state.histogramData.fines.map((bin) => MONEY.format(bin.low)),
       datasets: [{ data: state.histogramData.fines.map((bin) => bin.count), borderWidth: 0, borderRadius: 2 }],
     },
-    options: histogramOptions((value) => NUMBER.format(value)),
+    options: histogramOptions((value) => NUMBER.format(value), (index) => {
+      const bin = state.histogramData.fines[index];
+      const low = Math.ceil(bin.low);
+      const high = Math.max(low, Math.floor(bin.high));
+      setFineRange(low, high); updateActiveFilters(); scheduleRefresh(50);
+    }),
   });
   recolorHistograms();
 }
@@ -580,7 +614,7 @@ function handleDateSlider(changed) {
   setDateRange(start, end); updateActiveFilters(); scheduleRefresh();
 }
 function handleFineSlider(changed) {
-  let start = Number(elements.fineRangeStart.value), end = Number(elements.fineRangeEnd.value);
+  let start = sliderToFine(elements.fineRangeStart.value), end = sliderToFine(elements.fineRangeEnd.value);
   if (start > end) { if (changed === "start") end = start; else start = end; }
   setFineRange(start, end); updateActiveFilters(); scheduleRefresh();
 }
@@ -599,6 +633,28 @@ function updateHeatStyle() {
   elements.intensityValue.textContent = state.heat.intensity.toFixed(2).replace(/0$/, "") + "×";
   elements.radiusValue.textContent = state.heat.radius + " px"; elements.opacityValue.textContent = Math.round(state.heat.opacity * 100) + "%";
   renderMap();
+}
+
+function setAnalysisOpen(open) {
+  state.analysis.open = open;
+  elements.analysisDock.classList.toggle("is-open", open);
+  elements.analysisToggle.setAttribute("aria-expanded", String(open));
+  elements.analysisToggle.textContent = open ? "Hide" : "Show";
+  window.setTimeout(() => {
+    if (open) state.charts[state.analysis.active]?.resize();
+    state.map?.resize();
+  }, 200);
+}
+
+function selectAnalysis(name) {
+  state.analysis.active = name;
+  for (const tab of elements.analysisTabs) {
+    const active = tab.dataset.chart === name;
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-selected", String(active));
+  }
+  for (const panel of elements.analysisPanels) panel.hidden = panel.id !== "analysis-" + name;
+  setAnalysisOpen(true);
 }
 
 function resetFilters() {
@@ -639,11 +695,11 @@ function bindControls() {
     setDateRange(Math.min(start, end), end); updateActiveFilters(); scheduleRefresh(50);
   });
   elements.fineMin.addEventListener("change", () => {
-    const start = Number(elements.fineMin.value), end = Number(elements.fineRangeEnd.value);
+    const start = Number(elements.fineMin.value), end = Number(elements.fineMax.value);
     setFineRange(start, Math.max(start, end)); updateActiveFilters(); scheduleRefresh(50);
   });
   elements.fineMax.addEventListener("change", () => {
-    const start = Number(elements.fineRangeStart.value), end = Number(elements.fineMax.value);
+    const start = Number(elements.fineMin.value), end = Number(elements.fineMax.value);
     setFineRange(Math.min(start, end), end); updateActiveFilters(); scheduleRefresh(50);
   });
 
@@ -654,6 +710,8 @@ function bindControls() {
 
   for (const input of [elements.moving, elements.parking]) input.addEventListener("change", () => { updateActiveFilters(); scheduleRefresh(50); });
   for (const input of [elements.agency, elements.violation, elements.plate]) input.addEventListener("input", () => { updateActiveFilters(); scheduleRefresh(420); });
+  for (const tab of elements.analysisTabs) tab.addEventListener("click", () => selectAnalysis(tab.dataset.chart));
+  elements.analysisToggle.addEventListener("click", () => setAnalysisOpen(!state.analysis.open));
 }
 
 async function bootstrap() {

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="dashboard.css?v=20260915-2">
+  <link rel="stylesheet" href="dashboard.css?v=20260915-3">
 </head>
 <body>
   <header class="masthead">
@@ -65,7 +65,7 @@
             <div><p class="section-kicker">When</p><h3 id="date-range-title">Citation timeline</h3></div>
             <strong id="date-selection-label">—</strong>
           </div>
-          <div class="histogram-wrap"><canvas id="date-histogram"></canvas></div>
+          <div class="histogram-wrap"><canvas id="date-histogram" title="Click a month to filter the dashboard"></canvas></div>
           <div class="dual-range" aria-label="Citation date range">
             <input id="date-range-start" class="range-start" type="range" aria-label="Earliest citation date">
             <input id="date-range-end" class="range-end" type="range" aria-label="Latest citation date">
@@ -79,10 +79,10 @@
 
         <section class="range-panel" aria-labelledby="fine-range-title">
           <div class="range-heading">
-            <div><p class="section-kicker">How much</p><h3 id="fine-range-title">Base fine distribution</h3></div>
+            <div><p class="section-kicker">How much · logarithmic scale</p><h3 id="fine-range-title">Base fine distribution</h3></div>
             <strong id="fine-selection-label">—</strong>
           </div>
-          <div class="histogram-wrap"><canvas id="fine-histogram"></canvas></div>
+          <div class="histogram-wrap"><canvas id="fine-histogram" title="Click a fine band to filter the dashboard"></canvas></div>
           <div class="dual-range" aria-label="Base fine range">
             <input id="fine-range-start" class="range-start" type="range" aria-label="Minimum base fine">
             <input id="fine-range-end" class="range-end" type="range" aria-label="Maximum base fine">
@@ -136,23 +136,35 @@
         </div>
       </section>
 
-      <section class="insight-grid" aria-label="Violation trends and patterns">
-        <article class="panel insight-card">
+      <section id="analysis-dock" class="analysis-dock" aria-label="Violation trends and patterns">
+        <header class="analysis-tabs">
+          <strong>Analysis</strong>
+          <div role="tablist" aria-label="Analysis view">
+            <button class="analysis-tab active" type="button" role="tab" aria-selected="true" aria-controls="analysis-daily" data-chart="daily">Trend</button>
+            <button class="analysis-tab" type="button" role="tab" aria-selected="false" aria-controls="analysis-hour" data-chart="hour">Hourly</button>
+            <button class="analysis-tab" type="button" role="tab" aria-selected="false" aria-controls="analysis-top" data-chart="top">Violations</button>
+            <button class="analysis-tab" type="button" role="tab" aria-selected="false" aria-controls="analysis-money" data-chart="money">Money</button>
+          </div>
+          <button id="analysis-toggle" class="analysis-toggle" type="button" aria-expanded="false" aria-controls="analysis-panels">Show</button>
+        </header>
+        <div id="analysis-panels" class="analysis-panels">
+        <article id="analysis-daily" class="panel insight-card active" role="tabpanel">
           <div class="panel-heading"><div><p class="section-kicker">Trend</p><h2>Violations over time</h2></div><p id="trend-granularity" class="panel-note">Exact records</p></div>
           <div class="chart-wrap"><canvas id="daily-chart"></canvas></div>
         </article>
-        <article class="panel insight-card">
+        <article id="analysis-hour" class="panel insight-card" role="tabpanel" hidden>
           <div class="panel-heading"><div><p class="section-kicker">Time</p><h2>Hourly rhythm</h2></div><p class="panel-note">Mapped records</p></div>
           <div class="chart-wrap"><canvas id="hour-chart"></canvas></div>
         </article>
-        <article class="panel insight-card">
+        <article id="analysis-top" class="panel insight-card" role="tabpanel" hidden>
           <div class="panel-heading"><div><p class="section-kicker">Mix</p><h2>Top violations</h2></div><p class="panel-note">All records</p></div>
           <div class="chart-wrap"><canvas id="top-chart"></canvas></div>
         </article>
-        <article class="panel insight-card">
+        <article id="analysis-money" class="panel insight-card" role="tabpanel" hidden>
           <div class="panel-heading"><div><p class="section-kicker">Money</p><h2>Fines and payments</h2></div><p class="panel-note">Nominal dollars</p></div>
           <div class="chart-wrap"><canvas id="money-chart"></canvas></div>
         </article>
+        </div>
       </section>
     </section>
   </main>
@@ -160,6 +172,6 @@
   <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js"></script>
   <script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script type="module" src="app.js?v=20260915-3"></script>
+  <script type="module" src="app.js?v=20260915-5"></script>
 </body>
 </html>
