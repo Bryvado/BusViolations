@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,17 +7,20 @@
   <title>DC Violations Explorer</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="masthead">
-    <div>
-      <p class="eyebrow">District of Columbia · 2024–2026</p>
-      <h1>Violations Explorer</h1>
-      <p class="dek">Explore every published moving and parking citation by date, fine, location, agency, and violation.</p>
+    <div class="masthead-inner">
+      <div>
+        <p class="eyebrow">District of Columbia · 2024–2026</p>
+        <h1>Violations Explorer</h1>
+        <p class="dek">An interactive record of published moving and parking citations by date, fine, location, agency, and violation.</p>
+      </div>
+      <a class="source-link" href="https://github.com/Bryvado/BusViolations">Methods &amp; code <span aria-hidden="true">↗</span></a>
     </div>
-    <a class="source-link" href="https://github.com/Bryvado/BusViolations">Methods &amp; code</a>
   </header>
 
   <main class="page-shell">
@@ -39,7 +42,7 @@
       <div class="quick-filters">
         <fieldset class="category-field">
           <legend>Category</legend>
-          <div class="category-toggles">
+          <div class="category-toggles" role="group" aria-label="Violation category">
             <label class="category-toggle moving-toggle">
               <input id="type-moving" type="checkbox" value="Moving" checked>
               <span><i></i>Moving</span>
@@ -110,7 +113,7 @@
     <section class="panel map-panel">
       <div class="panel-heading map-heading">
         <div><p class="section-kicker">Geography</p><h2>Citation locations</h2></div>
-        <div class="segmented" aria-label="Map display">
+        <div class="segmented" role="group" aria-label="Map display">
           <button id="show-heat" class="active" type="button" aria-pressed="true">Heatmap</button>
           <button id="show-points" type="button" aria-pressed="false">Points</button>
         </div>

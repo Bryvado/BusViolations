@@ -432,7 +432,7 @@ function lineOptions(formatter) {
   return {
     responsive: true, maintainAspectRatio: false, animation: false,
     interaction: { mode: "index", intersect: false },
-    plugins: { legend: { labels: { color: "#34444a", font: { family: "Public Sans" }, usePointStyle: true } } },
+    plugins: { legend: { labels: { color: "#34444a", font: { family: "system-ui" }, usePointStyle: true } } },
     scales: {
       x: { grid: { display: false }, ticks: { color: "#657278", autoSkip: true, maxTicksLimit: 14, maxRotation: 0 } },
       y: { beginAtZero: true, grid: { color: "rgba(101,114,120,0.16)" }, ticks: { color: "#657278", callback: formatter } },
