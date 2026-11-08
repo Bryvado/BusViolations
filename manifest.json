@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-10-08T17:55:11.252350+00:00",
+  "generated_at": "2026-11-08T17:07:58.674399+00:00",
   "no_sampling": true,
   "summary_granularity": "day",
   "trend_summary": "trend_summary.parquet",
@@ -15,7 +15,7 @@
       "analysis_rows": 156954,
       "coordinate_rows": 156248,
       "path": "points/2024/01-moving.parquet",
-      "bytes": 586232
+      "bytes": 586281
     },
     {
       "year": 2024,
@@ -27,7 +27,7 @@
       "analysis_rows": 81712,
       "coordinate_rows": 81159,
       "path": "points/2024/01-parking.parquet",
-      "bytes": 476939
+      "bytes": 476982
     },
     {
       "year": 2024,
@@ -39,7 +39,7 @@
       "analysis_rows": 166249,
       "coordinate_rows": 165460,
       "path": "points/2024/02-moving.parquet",
-      "bytes": 614023
+      "bytes": 614094
     },
     {
       "year": 2024,
@@ -51,7 +51,7 @@
       "analysis_rows": 84713,
       "coordinate_rows": 84086,
       "path": "points/2024/02-parking.parquet",
-      "bytes": 487785
+      "bytes": 487858
     },
     {
       "year": 2024,
@@ -63,7 +63,7 @@
       "analysis_rows": 195023,
       "coordinate_rows": 194227,
       "path": "points/2024/03-moving.parquet",
-      "bytes": 731015
+      "bytes": 731077
     },
     {
       "year": 2024,
@@ -75,7 +75,7 @@
       "analysis_rows": 102424,
       "coordinate_rows": 101443,
       "path": "points/2024/03-parking.parquet",
-      "bytes": 568213
+      "bytes": 568262
     },
     {
       "year": 2024,
@@ -87,7 +87,7 @@
       "analysis_rows": 273165,
       "coordinate_rows": 272297,
       "path": "points/2024/04-moving.parquet",
-      "bytes": 1011436
+      "bytes": 1011487
     },
     {
       "year": 2024,
@@ -99,7 +99,7 @@
       "analysis_rows": 107548,
       "coordinate_rows": 106681,
       "path": "points/2024/04-parking.parquet",
-      "bytes": 591281
+      "bytes": 591331
     },
     {
       "year": 2024,
@@ -111,7 +111,7 @@
       "analysis_rows": 310015,
       "coordinate_rows": 309144,
       "path": "points/2024/05-moving.parquet",
-      "bytes": 1151823
+      "bytes": 1151897
     },
     {
       "year": 2024,
@@ -123,7 +123,7 @@
       "analysis_rows": 109814,
       "coordinate_rows": 108852,
       "path": "points/2024/05-parking.parquet",
-      "bytes": 597697
+      "bytes": 597773
     },
     {
       "year": 2024,
@@ -135,7 +135,7 @@
       "analysis_rows": 310885,
       "coordinate_rows": 310071,
       "path": "points/2024/06-moving.parquet",
-      "bytes": 1162744
+      "bytes": 1162791
     },
     {
       "year": 2024,
@@ -147,7 +147,7 @@
       "analysis_rows": 94567,
       "coordinate_rows": 93598,
       "path": "points/2024/06-parking.parquet",
-      "bytes": 522191
+      "bytes": 522239
     },
     {
       "year": 2024,
@@ -159,7 +159,7 @@
       "analysis_rows": 298168,
       "coordinate_rows": 297450,
       "path": "points/2024/07-moving.parquet",
-      "bytes": 1098345
+      "bytes": 1098397
     },
     {
       "year": 2024,
@@ -171,7 +171,7 @@
       "analysis_rows": 102288,
       "coordinate_rows": 101288,
       "path": "points/2024/07-parking.parquet",
-      "bytes": 559887
+      "bytes": 559943
     },
     {
       "year": 2024,
@@ -183,7 +183,7 @@
       "analysis_rows": 280677,
       "coordinate_rows": 279761,
       "path": "points/2024/08-moving.parquet",
-      "bytes": 1043291
+      "bytes": 1043367
     },
     {
       "year": 2024,
@@ -195,7 +195,7 @@
       "analysis_rows": 103922,
       "coordinate_rows": 102973,
       "path": "points/2024/08-parking.parquet",
-      "bytes": 574777
+      "bytes": 574855
     },
     {
       "year": 2024,
@@ -207,7 +207,7 @@
       "analysis_rows": 272925,
       "coordinate_rows": 272147,
       "path": "points/2024/09-moving.parquet",
-      "bytes": 1017619
+      "bytes": 1017671
     },
     {
       "year": 2024,
@@ -219,7 +219,7 @@
       "analysis_rows": 96649,
       "coordinate_rows": 95702,
       "path": "points/2024/09-parking.parquet",
-      "bytes": 529620
+      "bytes": 529662
     },
     {
       "year": 2024,
@@ -231,7 +231,7 @@
       "analysis_rows": 264534,
       "coordinate_rows": 263415,
       "path": "points/2024/10-moving.parquet",
-      "bytes": 983600
+      "bytes": 983674
     },
     {
       "year": 2024,
@@ -243,7 +243,7 @@
       "analysis_rows": 106319,
       "coordinate_rows": 105397,
       "path": "points/2024/10-parking.parquet",
-      "bytes": 582108
+      "bytes": 582176
     },
     {
       "year": 2024,
@@ -255,7 +255,7 @@
       "analysis_rows": 259983,
       "coordinate_rows": 259060,
       "path": "points/2024/11-moving.parquet",
-      "bytes": 961639
+      "bytes": 961682
     },
     {
       "year": 2024,
@@ -267,7 +267,7 @@
       "analysis_rows": 80574,
       "coordinate_rows": 79967,
       "path": "points/2024/11-parking.parquet",
-      "bytes": 459660
+      "bytes": 459706
     },
     {
       "year": 2024,
@@ -279,7 +279,7 @@
       "analysis_rows": 256181,
       "coordinate_rows": 255179,
       "path": "points/2024/12-moving.parquet",
-      "bytes": 959124
+      "bytes": 959178
     },
     {
       "year": 2024,
@@ -291,7 +291,7 @@
       "analysis_rows": 71335,
       "coordinate_rows": 70737,
       "path": "points/2024/12-parking.parquet",
-      "bytes": 416415
+      "bytes": 416476
     },
     {
       "year": 2025,
@@ -303,7 +303,7 @@
       "analysis_rows": 224357,
       "coordinate_rows": 223667,
       "path": "points/2025/01-moving.parquet",
-      "bytes": 823473
+      "bytes": 823540
     },
     {
       "year": 2025,
@@ -315,7 +315,7 @@
       "analysis_rows": 61585,
       "coordinate_rows": 61102,
       "path": "points/2025/01-parking.parquet",
-      "bytes": 374020
+      "bytes": 374094
     },
     {
       "year": 2025,
@@ -327,7 +327,7 @@
       "analysis_rows": 220383,
       "coordinate_rows": 219502,
       "path": "points/2025/02-moving.parquet",
-      "bytes": 817847
+      "bytes": 817898
     },
     {
       "year": 2025,
@@ -339,7 +339,7 @@
       "analysis_rows": 73783,
       "coordinate_rows": 73179,
       "path": "points/2025/02-parking.parquet",
-      "bytes": 430653
+      "bytes": 430693
     },
     {
       "year": 2025,
@@ -351,7 +351,7 @@
       "analysis_rows": 281707,
       "coordinate_rows": 280690,
       "path": "points/2025/03-moving.parquet",
-      "bytes": 1017457
+      "bytes": 1017522
     },
     {
       "year": 2025,
@@ -363,7 +363,7 @@
       "analysis_rows": 98529,
       "coordinate_rows": 97653,
       "path": "points/2025/03-parking.parquet",
-      "bytes": 539216
+      "bytes": 539282
     },
     {
       "year": 2025,
@@ -375,7 +375,7 @@
       "analysis_rows": 302607,
       "coordinate_rows": 301726,
       "path": "points/2025/04-moving.parquet",
-      "bytes": 1111777
+      "bytes": 1111825
     },
     {
       "year": 2025,
@@ -387,7 +387,7 @@
       "analysis_rows": 104301,
       "coordinate_rows": 103351,
       "path": "points/2025/04-parking.parquet",
-      "bytes": 576191
+      "bytes": 576244
     },
     {
       "year": 2025,
@@ -399,7 +399,7 @@
       "analysis_rows": 303231,
       "coordinate_rows": 302365,
       "path": "points/2025/05-moving.parquet",
-      "bytes": 1116799
+      "bytes": 1116857
     },
     {
       "year": 2025,
@@ -411,7 +411,7 @@
       "analysis_rows": 95913,
       "coordinate_rows": 95162,
       "path": "points/2025/05-parking.parquet",
-      "bytes": 527406
+      "bytes": 527462
     },
     {
       "year": 2025,
@@ -423,7 +423,7 @@
       "analysis_rows": 286076,
       "coordinate_rows": 285244,
       "path": "points/2025/06-moving.parquet",
-      "bytes": 1063599
+      "bytes": 1063671
     },
     {
       "year": 2025,
@@ -435,7 +435,7 @@
       "analysis_rows": 88117,
       "coordinate_rows": 87408,
       "path": "points/2025/06-parking.parquet",
-      "bytes": 499470
+      "bytes": 499541
     },
     {
       "year": 2025,
@@ -447,7 +447,7 @@
       "analysis_rows": 289946,
       "coordinate_rows": 289015,
       "path": "points/2025/07-moving.parquet",
-      "bytes": 1066456
+      "bytes": 1066499
     },
     {
       "year": 2025,
@@ -459,7 +459,7 @@
       "analysis_rows": 94886,
       "coordinate_rows": 94148,
       "path": "points/2025/07-parking.parquet",
-      "bytes": 527167
+      "bytes": 527215
     },
     {
       "year": 2025,
@@ -471,7 +471,7 @@
       "analysis_rows": 267486,
       "coordinate_rows": 266062,
       "path": "points/2025/08-moving.parquet",
-      "bytes": 954156
+      "bytes": 954223
     },
     {
       "year": 2025,
@@ -483,7 +483,7 @@
       "analysis_rows": 45381,
       "coordinate_rows": 44993,
       "path": "points/2025/08-parking.parquet",
-      "bytes": 318770
+      "bytes": 318841
     },
     {
       "year": 2025,
@@ -495,7 +495,7 @@
       "analysis_rows": 228535,
       "coordinate_rows": 227558,
       "path": "points/2025/09-moving.parquet",
-      "bytes": 831594
+      "bytes": 831668
     },
     {
       "year": 2025,
@@ -507,7 +507,7 @@
       "analysis_rows": 93595,
       "coordinate_rows": 92908,
       "path": "points/2025/09-parking.parquet",
-      "bytes": 519782
+      "bytes": 519859
     },
     {
       "year": 2025,
@@ -519,7 +519,7 @@
       "analysis_rows": 239366,
       "coordinate_rows": 238267,
       "path": "points/2025/10-moving.parquet",
-      "bytes": 886167
+      "bytes": 886209
     },
     {
       "year": 2025,
@@ -531,7 +531,7 @@
       "analysis_rows": 100084,
       "coordinate_rows": 99234,
       "path": "points/2025/10-parking.parquet",
-      "bytes": 548565
+      "bytes": 548614
     },
     {
       "year": 2025,
@@ -543,7 +543,7 @@
       "analysis_rows": 206426,
       "coordinate_rows": 205513,
       "path": "points/2025/11-moving.parquet",
-      "bytes": 791415
+      "bytes": 791486
     },
     {
       "year": 2025,
@@ -555,7 +555,7 @@
       "analysis_rows": 70713,
       "coordinate_rows": 70160,
       "path": "points/2025/11-parking.parquet",
-      "bytes": 408212
+      "bytes": 408277
     },
     {
       "year": 2025,
@@ -567,7 +567,7 @@
       "analysis_rows": 218779,
       "coordinate_rows": 217880,
       "path": "points/2025/12-moving.parquet",
-      "bytes": 800995
+      "bytes": 801041
     },
     {
       "year": 2025,
@@ -579,7 +579,7 @@
       "analysis_rows": 82160,
       "coordinate_rows": 81529,
       "path": "points/2025/12-parking.parquet",
-      "bytes": 465115
+      "bytes": 465162
     },
     {
       "year": 2026,
@@ -591,7 +591,7 @@
       "analysis_rows": 181048,
       "coordinate_rows": 180215,
       "path": "points/2026/01-moving.parquet",
-      "bytes": 680019
+      "bytes": 680076
     },
     {
       "year": 2026,
@@ -603,7 +603,7 @@
       "analysis_rows": 69900,
       "coordinate_rows": 69413,
       "path": "points/2026/01-parking.parquet",
-      "bytes": 402917
+      "bytes": 402970
     },
     {
       "year": 2026,
@@ -611,11 +611,11 @@
       "month_name": "February",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 173040,
-      "analysis_rows": 172863,
-      "coordinate_rows": 172305,
+      "source_rows": 173041,
+      "analysis_rows": 172864,
+      "coordinate_rows": 172306,
       "path": "points/2026/02-moving.parquet",
-      "bytes": 667511
+      "bytes": 667600
     },
     {
       "year": 2026,
@@ -623,11 +623,11 @@
       "month_name": "February",
       "violation_type": "Parking",
       "status": "ready",
-      "source_rows": 62772,
-      "analysis_rows": 62007,
+      "source_rows": 62773,
+      "analysis_rows": 62008,
       "coordinate_rows": 61499,
       "path": "points/2026/02-parking.parquet",
-      "bytes": 375093
+      "bytes": 375159
     },
     {
       "year": 2026,
@@ -635,11 +635,11 @@
       "month_name": "March",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 233855,
-      "analysis_rows": 227761,
-      "coordinate_rows": 226989,
+      "source_rows": 233858,
+      "analysis_rows": 227764,
+      "coordinate_rows": 226990,
       "path": "points/2026/03-moving.parquet",
-      "bytes": 866836
+      "bytes": 866890
     },
     {
       "year": 2026,
@@ -651,7 +651,7 @@
       "analysis_rows": 104870,
       "coordinate_rows": 103872,
       "path": "points/2026/03-parking.parquet",
-      "bytes": 568519
+      "bytes": 568560
     },
     {
       "year": 2026,
@@ -659,11 +659,11 @@
       "month_name": "April",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 241107,
-      "analysis_rows": 232084,
-      "coordinate_rows": 231147,
+      "source_rows": 241109,
+      "analysis_rows": 232086,
+      "coordinate_rows": 231148,
       "path": "points/2026/04-moving.parquet",
-      "bytes": 876645
+      "bytes": 876747
     },
     {
       "year": 2026,
@@ -675,7 +675,7 @@
       "analysis_rows": 109181,
       "coordinate_rows": 108275,
       "path": "points/2026/04-parking.parquet",
-      "bytes": 584736
+      "bytes": 584807
     },
     {
       "year": 2026,
@@ -683,11 +683,11 @@
       "month_name": "May",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 253575,
-      "analysis_rows": 241169,
-      "coordinate_rows": 240033,
+      "source_rows": 253576,
+      "analysis_rows": 241170,
+      "coordinate_rows": 240034,
       "path": "points/2026/05-moving.parquet",
-      "bytes": 917165
+      "bytes": 917216
     },
     {
       "year": 2026,
@@ -695,11 +695,11 @@
       "month_name": "May",
       "violation_type": "Parking",
       "status": "ready",
-      "source_rows": 100117,
-      "analysis_rows": 96714,
-      "coordinate_rows": 95896,
+      "source_rows": 100118,
+      "analysis_rows": 96715,
+      "coordinate_rows": 95897,
       "path": "points/2026/05-parking.parquet",
-      "bytes": 535442
+      "bytes": 535518
     },
     {
       "year": 2026,
@@ -707,11 +707,11 @@
       "month_name": "June",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 205828,
-      "analysis_rows": 205040,
-      "coordinate_rows": 203992,
+      "source_rows": 205833,
+      "analysis_rows": 205045,
+      "coordinate_rows": 203993,
       "path": "points/2026/06-moving.parquet",
-      "bytes": 774699
+      "bytes": 774786
     },
     {
       "year": 2026,
@@ -719,11 +719,11 @@
       "month_name": "June",
       "violation_type": "Parking",
       "status": "ready",
-      "source_rows": 98802,
-      "analysis_rows": 95239,
-      "coordinate_rows": 94423,
+      "source_rows": 98829,
+      "analysis_rows": 95266,
+      "coordinate_rows": 94449,
       "path": "points/2026/06-parking.parquet",
-      "bytes": 525779
+      "bytes": 526152
     },
     {
       "year": 2026,
@@ -731,11 +731,11 @@
       "month_name": "July",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 212459,
-      "analysis_rows": 209847,
-      "coordinate_rows": 207620,
+      "source_rows": 212468,
+      "analysis_rows": 209856,
+      "coordinate_rows": 207628,
       "path": "points/2026/07-moving.parquet",
-      "bytes": 785776
+      "bytes": 785932
     },
     {
       "year": 2026,
@@ -743,11 +743,11 @@
       "month_name": "July",
       "violation_type": "Parking",
       "status": "ready",
-      "source_rows": 94945,
-      "analysis_rows": 92605,
-      "coordinate_rows": 91714,
+      "source_rows": 94961,
+      "analysis_rows": 92620,
+      "coordinate_rows": 91726,
       "path": "points/2026/07-parking.parquet",
-      "bytes": 515830
+      "bytes": 516022
     },
     {
       "year": 2026,
@@ -755,11 +755,11 @@
       "month_name": "August",
       "violation_type": "Moving",
       "status": "ready",
-      "source_rows": 154667,
-      "analysis_rows": 152088,
-      "coordinate_rows": 150090,
+      "source_rows": 230925,
+      "analysis_rows": 228175,
+      "coordinate_rows": 225403,
       "path": "points/2026/08-moving.parquet",
-      "bytes": 580550
+      "bytes": 858358
     },
     {
       "year": 2026,
@@ -767,44 +767,47 @@
       "month_name": "August",
       "violation_type": "Parking",
       "status": "ready",
-      "source_rows": 89708,
-      "analysis_rows": 87542,
-      "coordinate_rows": 86750,
+      "source_rows": 91803,
+      "analysis_rows": 89605,
+      "coordinate_rows": 88712,
       "path": "points/2026/08-parking.parquet",
-      "bytes": 478268
+      "bytes": 490474
     },
     {
       "year": 2026,
       "month": 9,
       "month_name": "September",
       "violation_type": "Moving",
-      "status": "empty",
-      "source_rows": 0,
-      "analysis_rows": 0,
-      "coordinate_rows": 0,
-      "path": null
+      "status": "ready",
+      "source_rows": 150741,
+      "analysis_rows": 149023,
+      "coordinate_rows": 147159,
+      "path": "points/2026/09-moving.parquet",
+      "bytes": 569512
     },
     {
       "year": 2026,
       "month": 9,
       "month_name": "September",
       "violation_type": "Parking",
-      "status": "empty",
-      "source_rows": 0,
-      "analysis_rows": 0,
-      "coordinate_rows": 0,
-      "path": null
+      "status": "ready",
+      "source_rows": 89078,
+      "analysis_rows": 87434,
+      "coordinate_rows": 86718,
+      "path": "points/2026/09-parking.parquet",
+      "bytes": 485502
     },
     {
       "year": 2026,
       "month": 10,
       "month_name": "October",
       "violation_type": "Moving",
-      "status": "empty",
-      "source_rows": 0,
-      "analysis_rows": 0,
-      "coordinate_rows": 0,
-      "path": null
+      "status": "ready",
+      "source_rows": 1,
+      "analysis_rows": 1,
+      "coordinate_rows": 1,
+      "path": "points/2026/10-moving.parquet",
+      "bytes": 8425
     },
     {
       "year": 2026,
@@ -822,11 +825,12 @@
       "month": 11,
       "month_name": "November",
       "violation_type": "Moving",
-      "status": "empty",
-      "source_rows": 0,
+      "status": "ready",
+      "source_rows": 2,
       "analysis_rows": 0,
       "coordinate_rows": 0,
-      "path": null
+      "path": "points/2026/11-moving.parquet",
+      "bytes": 6449
     },
     {
       "year": 2026,
